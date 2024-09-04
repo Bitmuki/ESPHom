@@ -1,0 +1,110 @@
+esphome:
+  name: hempy
+  friendly_name: Hempy
+  includes:
+    - hempy/hempy.h
+  on_boot:
+    priority: 10
+    then:
+      - rtttl.play:
+           rtttl: 'mario:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,16p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16c7,16p,16c7,16c7,p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16d#6,8p,16d6,8p,16c6'
+
+rp2040:
+  board: rpipicow
+  framework:
+    # Required until https://github.com/platformio/platform-raspberrypi/pull/36 is merged
+    platform_version: https://github.com/maxgerhardt/platform-raspberrypi.git
+
+logger:
+  level: DEBUG
+
+debug:
+  update_interval: 60s
+
+text_sensor:
+  - platform: debug
+    device:
+      name: "Device Info"
+    reset_reason:
+      name: "Reset Reason"
+
+
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret hempy_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret hempy_ota_password
+
+wifi:
+  ssid: !secret hempy_wifi_ssid
+  password: !secret hempy_wifi_password
+
+  # Enable fallback hotspot in case WiFi connection fails
+  ap:
+    ssid: "Hempy Fallback Hotspot"
+    password: !secret hempy_wifi_password
+
+output:
+  - platform: gpio # Pico W built-in LED
+    pin: 32
+    id: led
+  - platform: rp2040_pwm     # Buzzer. For ESP chips use: platform: esp8266_pwm
+    pin: 2
+    id: buzzer
+
+rtttl:  #Ring Tone Text Transfer Language
+  output: buzzer
+  on_finished_playback:
+    - logger.log: 'Song ended!'
+
+# interval:
+  #- interval: 2000ms # Heart beat - Blink built-in LED every 2sec
+  #  then:
+  #    - output.turn_on: led
+  #    - delay: 1000ms
+  #    - output.turn_off: led
+
+# Example configuration entry
+sensor:
+  - platform: debug
+    loop_time:
+      name: "Loop Time"    
+  - platform: hx711
+    name: "HX711 Value"
+    unit_of_measurement: "kg"
+    icon: "mdi:weight-kilogram"
+    dout_pin: 8
+    clk_pin: 7
+    gain: 128
+    update_interval: 5s
+    accuracy_decimals: 2
+    on_value_range:
+        - below: 0.5
+          then:
+            - output.turn_on: led
+        - above: 1.0
+          then:
+            - output.turn_off: led
+    filters:
+      - calibrate_linear:
+          - -103354 -> 0
+          - -643973 -> 5
+    
+# Example configuration entry
+
+  - platform: internal_temperature
+    name: "Internal Temperature"
+    unit_of_measurement: "°C"
+    icon: "mdi:water-percent"
+    device_class: "temperature"
+    state_class: "measurement"
+    accuracy_decimals: 1
+    update_interval: 60s
+    filters:
+      - sliding_window_moving_average:
+          window_size: 15
+          send_every: 15

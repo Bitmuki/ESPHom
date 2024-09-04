@@ -1,0 +1,56 @@
+esphome:
+  name: bitgate
+  friendly_name: BitGate
+  on_boot:
+    priority: 10
+    then:
+      - output.turn_off: relay
+  
+rp2040:
+  board: rpipicow
+  framework:
+    # Required until https://github.com/platformio/platform-raspberrypi/pull/36 is merged
+    platform_version: https://github.com/maxgerhardt/platform-raspberrypi.git
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret gate_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret gate_ota_password
+
+wifi:
+  ssid: !secret gate_wifi_ssid
+  password: !secret gate_wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "BitGateHS"
+    password: !secret gate_wifi_password
+
+output:
+  - platform: gpio
+    pin: GPIO6
+    id: relay
+    inverted: False
+  - platform: gpio # Pico W built-in LED
+    pin: 32
+    id: led
+
+button:
+  - platform: template
+    id: gate_button
+    name: "Gate"
+    on_press:
+      then:
+        - output.turn_on: led
+        - output.turn_on: relay
+        - delay: 1s
+        - output.turn_off: led
+        - output.turn_off: relay
