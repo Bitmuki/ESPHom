@@ -82,7 +82,7 @@ sensor:
     loop_time:
       name: "Loop Time"    
   - platform: hx711
-    id: weight_sensor
+    id: weight_sensor1
     name: "HX711 Value"
     unit_of_measurement: "kg"
     icon: "mdi:weight-kilogram"
@@ -118,5 +118,23 @@ sensor:
           window_size: 15
           send_every: 15
 
+  - platform: template
+    name: "Start Watering Weight"
+    id: start_watering_weight
+    unit_of_measurement: "kg"
+    accuracy_decimals: 2
+    update_interval: never
+
+  - platform: template
+    name: "Stop Watering Weight"
+    id: stop_watering_weight
+    unit_of_measurement: "kg"
+    accuracy_decimals: 2
+    update_interval: never
+
 hempy:
+  id: hempy1
+  weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
+  start_watering_weight: 2.0
+  stop_watering_weight: 3.0
   update_interval: 5s
