@@ -1,13 +1,17 @@
-#include "esphome.h"
+#include "hempy.h"
 
 namespace esphome {
 namespace hempy {
 
-class HempyComponent : public PollingComponent {
- public:
-  // Constructor that sets the update interval to 1 second (1000 ms)
-  HempyComponent() : PollingComponent(1000) {}
+HempyComponent::HempyComponent() : PollingComponent(1000) {}  // Constructor
 
-  void setup() override {
-    ESP_LOGI("hempy", "Hempy component initialized");
-  }
+void HempyComponent::setup() {
+  ESP_LOGI("hempy", "Hempy component initialized");
+}
+
+void HempyComponent::update() {
+  ESP_LOGI("hempy", "Hello World");
+}
+
+}  // namespace hempy
+}  // namespace esphome
