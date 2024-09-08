@@ -15,7 +15,9 @@ external_components:
       type: git
       url: https://github.com/Bitmuki/ESPHome
       ref: main
+      #path: components 
     components: [ hempy ]
+    refresh: 60s
 
 rp2040:
   board: rpipicow
@@ -115,5 +117,6 @@ sensor:
           window_size: 15
           send_every: 15
 
-#hempy:
- # id: hempy1
+hempy:
+  id: hempy1
+  weight_sensor_dout_pin: 9
