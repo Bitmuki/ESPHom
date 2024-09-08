@@ -12,9 +12,13 @@ HempyComponent = hempy_ns.class_('HempyComponent', cg.PollingComponent)
 # Configuration schema
 CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(HempyComponent),
+    cv.Required('weight_sensor'): cv.use_id(sensor.Sensor),
 }).extend(cv.polling_component_schema(default_update_interval="1s"))
 
 # Code generation when configuring the component
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
+    weight_sensor = await cg.get_variable(config['weight_sensor'])
+    cg.add(var.set_weight_sensor(weight_sensor))
     await cg.register_component(var, config)
+    #await cg.register_polling_component(var, config)

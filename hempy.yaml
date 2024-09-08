@@ -82,6 +82,7 @@ sensor:
     loop_time:
       name: "Loop Time"    
   - platform: hx711
+    id: weight_sensor
     name: "HX711 Value"
     unit_of_measurement: "kg"
     icon: "mdi:weight-kilogram"
