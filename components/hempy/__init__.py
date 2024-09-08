@@ -2,7 +2,7 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import core, components
 from esphome.const import (    
-    CONF_ID, CONF_START_WATERING_WEIGHT, CONF_STOP_WATERING_WEIGHT
+    CONF_ID
 )
 from esphome.components import sensor
 
@@ -14,8 +14,8 @@ HempyComponent = hempy_ns.class_('HempyComponent', cg.PollingComponent)
 CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(HempyComponent),
     cv.Required('weight_sensor'): cv.use_id(sensor.Sensor),
-    cv.Optional(CONF_START_WATERING_WEIGHT, default=0.0): cv.float_,
-    cv.Optional(CONF_STOP_WATERING_WEIGHT, default=0.0): cv.float_,
+    cv.Optional('start_watering_weight', default=0.0): cv.float_,
+    cv.Optional('stop_watering_weight', default=0.0): cv.float_,
 }).extend(cv.polling_component_schema(default_update_interval="1s"))
 
 # Code generation when configuring the component
