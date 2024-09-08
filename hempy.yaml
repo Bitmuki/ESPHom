@@ -118,5 +118,4 @@ sensor:
           send_every: 15
 
 hempy:
-  id: hempy1
-  weight_sensor_dout_pin: 9
+  update_interval: 5s
