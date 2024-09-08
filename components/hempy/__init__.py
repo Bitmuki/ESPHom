@@ -4,6 +4,7 @@ from esphome import core, components
 from esphome.const import (    
     CONF_ID
 )
+from esphome.components import sensor
 
 # Define a namespace for the component
 hempy_ns = cg.esphome_ns.namespace('hempy')
