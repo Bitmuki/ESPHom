@@ -1,6 +1,9 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome import core, components
+from esphome.const import (    
+    CONF_ID
+)
 
 # Define a namespace for the component
 hempy_ns = cg.esphome_ns.namespace('hempy')
