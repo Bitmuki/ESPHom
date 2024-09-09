@@ -3,7 +3,7 @@
 namespace esphome {
 namespace hempy {
 
-HempyComponent::HempyComponent() : PollingComponent(1000), weight_sensor_(nullptr) {}  // Constructor
+HempyComponent::HempyComponent() : PollingComponent(1000), weight_sensor_(nullptr), start_watering_weight_(0.0), stop_watering_weight_(0.0) {}  // Constructor
 
 void HempyComponent::setup() {
   ESP_LOGI("hempy", "Hempy component initialized with StartWateringWeight: %.2f, StopWateringWeight: %.2f",

@@ -39,6 +39,21 @@ text_sensor:
 api:
   encryption:
     key: !secret hempy_encryption_key
+    
+  services:
+    - service: set_start_watering_weight
+      variables:
+        value: float
+      then:
+        - lambda: |-
+            id(hempy1).set_start_watering_weight(value);
+
+    - service: set_stop_watering_weight
+      variables:
+        value: float
+      then:
+        - lambda: |-
+            id(hempy1).set_stop_watering_weight(value);
 
 ota:
   - platform: esphome
@@ -109,7 +124,7 @@ sensor:
     device_class: "temperature"
     state_class: "measurement"
     accuracy_decimals: 1
-    update_interval: 60s
+    update_interval: 5s
     filters:
       - sliding_window_moving_average:
           window_size: 15
@@ -134,7 +149,7 @@ sensor:
     name: "Start Watering Weight"
     lambda: |-
       return id(hempy1).get_start_watering_weight();
-    update_interval: never
+    update_interval: 5s
     unit_of_measurement: "kg"
     accuracy_decimals: 2
 
@@ -142,27 +157,13 @@ sensor:
     name: "Stop Watering Weight"
     lambda: |-
       return id(hempy1).get_stop_watering_weight();
-    update_interval: never
+    update_interval: 5s
     unit_of_measurement: "kg"
     accuracy_decimals: 2
-
-api:
-  services:
-    - service: set_start_watering_weight
-      variables:
-        value: float
-      then:
-        - lambda: |-
-            id(hempy1).set_start_watering_weight(value);
-
-    - service: set_stop_watering_weight
-      variables:
-        value: float
-      then:
-        - lambda: |-
-            id(hempy1).set_stop_watering_weight(value);
 
 hempy:
   id: hempy1
   weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
+  start_watering_weight: 2.0
+  stop_watering_weight: 3.0
   update_interval: 5s
