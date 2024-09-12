@@ -24,7 +24,7 @@ void HempyComponent::tare_weight_scale()
 {
   if (this->weight_sensor_) {
     tare_weight_offset_ = this->weight_sensor_->state;  // store the current reading as the offset
-    ESP_LOGI("hempy", "Offset: %.2f kg", weight,start_watering_weight_, stop_watering_weight_); // Log the weight in kg (or the unit configured)
+    ESP_LOGI("hempy", "Offset: %.2f kg", tare_weight_offset_); // Log the weight in kg (or the unit configured)
   } 
 
 }
