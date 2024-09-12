@@ -13,7 +13,8 @@ void HempyComponent::setup() {
 void HempyComponent::update() {
    if (this->weight_sensor_) {
     float weight = this->weight_sensor_->state - tare_weight_offset_;  // Access the weight sensor's state and apply the offset
-    ESP_LOGI("hempy", "Weight: %.2f kg, (start: %.2f, stop: %.2f)", weight,start_watering_weight_, stop_watering_weight_); // Log the weight in kg (or the unit configured)
+    ESP_LOGI("hempy", "State: %s, Weight: %.2f kg, (start: %.2f, stop: %.2f)", 
+             to_text_state(),weight,start_watering_weight_, stop_watering_weight_); // Log the weight in kg (or the unit configured)
   } else {
     ESP_LOGW("hempy", "No weight sensor available");
   }
@@ -26,7 +27,21 @@ void HempyComponent::tare_weight_scale()
     tare_weight_offset_ = this->weight_sensor_->state;  // store the current reading as the offset
     ESP_LOGI("hempy", "Offset: %.2f kg", tare_weight_offset_); // Log the weight in kg (or the unit configured)
   } 
+}
 
+const char *HempyComponent::to_text_state() {
+  switch (State) {
+  case HempyStates::DISABLED:
+    return "DISABLED";
+  case HempyStates::IDLE:
+    return "IDLE";
+  case HempyStates::WATERING:
+    return "WATERING";
+  case HempyStates::DRAINING:
+    return "DRAINING";
+  default:
+    return "?";
+  }
 }
 
 }  // namespace hempy
