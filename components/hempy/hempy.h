@@ -17,11 +17,13 @@ class HempyComponent : public PollingComponent {
   void set_stop_watering_weight(float start_watering_weight) { this->stop_watering_weight_ = start_watering_weight; }
   float get_start_watering_weight() const { return this->start_watering_weight_; }
   float get_stop_watering_weight() const { return this->stop_watering_weight_; }
+  void tare_weight_scale();
 
  private:
   sensor::Sensor *weight_sensor_;
   float start_watering_weight_{0.0};
   float stop_watering_weight_{0.0};
+  float tare_weight_offset_{0.0}; // Updated when tare_weight_scale() is called
 };
 
 }  // namespace hempy

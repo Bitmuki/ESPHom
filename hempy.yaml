@@ -55,6 +55,11 @@ api:
         - lambda: |-
             id(hempy1).set_stop_watering_weight(value);
 
+    - service: tare_weight_scale
+      then:
+        - lambda: |-
+            id(hempy1).tare_weight_scale();
+
 ota:
   - platform: esphome
     password: !secret hempy_ota_password
