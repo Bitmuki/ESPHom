@@ -1,0 +1,77 @@
+type: entities
+title: Hempy bucket
+entities:
+  - entity: sensor.hempy_hx711_value
+    attribute: sensor.hempy_hx711_value
+    name: Weight
+    prefix: ''
+    suffix: kg
+  - type: divider
+  - type: button
+    icon: mdi:scale-balance
+    name: Tare weight
+    tap_action:
+      action: call-service
+      confirmation:
+        text: The current sensor reading will be saved as the new zero point.
+      service: esphome.hempy_tare_weight_scale
+      service_data: {}
+  - type: conditional
+    conditions:
+      - entity: sun.sun
+        state: below_horizon
+    row:
+      entity: sun.sun
+      type: attribute
+      attribute: azimuth
+      icon: mdi:angle-acute
+      name: Sun azimuth
+  - type: section
+    label: Watering
+  - type: button
+    name: Water now
+    icon: mdi:power-cycle
+    tap_action:
+      action: call-service
+      service: esphome.hempy_water_now
+      service_data: {}
+  - entity: input_number.start_watering_weight
+    icon: mdi:weight-kilogram
+    name: Start Watering Weight
+    step: 0.1
+    mode: box
+  - entity: input_number.stop_watering_weight
+    icon: mdi:weight-kilogram
+    name: Stop Watering Weight
+    step: 0.1
+    mode: box
+  - type: section
+    label: About
+  - type: weblink
+    name: Gbox420 - Hempy bucket
+    url: https://sites.google.com/site/growboxguy/hempy-bucket
+    icon: mdi:link
+
+
+type: entities
+entities:
+  - entity: sensor.hempy_hx711_value
+  - entity: sensor.hempy_internal_temperature
+  - entity: sensor.hempy_start_watering_weight
+  - entity: sensor.hempy_stop_watering_weight
+  - entity: input_number.start_watering_weight
+    icon: mdi:weight-kilogram
+  - entity: input_number.stop_watering_weight
+    secondary_info: none
+    icon: mdi:weight-kilogram
+
+
+show_name: true
+show_icon: true
+type: button
+name: Tare Weight Scale
+icon: mdi:scale-balance
+tap_action:
+  action: call-service
+  service: esphome.hempy_tare_weight_scale
+  service_data: {}

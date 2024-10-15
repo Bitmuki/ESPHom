@@ -80,6 +80,23 @@ output:
   - platform: rp2040_pwm     # Buzzer. For ESP chips use platform: esp8266_pwm
     pin: 2
     id: buzzer
+  - platform: gpio  # Relay to power water pump for Bucket 1
+    pin: 10  # Relay's IN pin
+    id: relay_pump1
+    inverted: true   # Negative logic (false turns it on)
+  - platform: gpio  # Relay to power water pump for Bucket 2
+    pin: 11   # Relay's IN pin
+    id: relay_pump2
+    inverted: true   # Negative logic (false turns it on)
+
+switch:
+  - platform: output
+    name: "Pump 1"
+    output: relay_pump1
+    
+  - platform: output
+    name: "Pump 2"
+    output: relay_pump2
 
 rtttl:  #Ring Tone Text Transfer Language
   output: buzzer
@@ -99,14 +116,14 @@ sensor:
   - platform: debug
     loop_time:
       name: "Loop Time"    
-  #HX711
+  #HX711 - Bucket 1
   - platform: hx711
     id: weight_sensor1
     name: "HX711 Value"
     unit_of_measurement: "kg"
     icon: "mdi:weight-kilogram"
-    dout_pin: 8
-    clk_pin: 7
+    dout_pin: 7
+    clk_pin: 6
     gain: 128
     update_interval: 5s
     accuracy_decimals: 2
@@ -119,8 +136,34 @@ sensor:
             - output.turn_off: led
     filters:
       - calibrate_linear:
-          - -103354 -> 0
-          - -643973 -> 5
+          - -75570 -> 0  #Raw reading when the weight sensor has no weigth on it
+          - -227570 -> 2  #Raw reading of an object with a known wight
+      - median:
+          window_size: 10 #calculate median based on the last 10 readings
+  #HX711 - Bucket 2
+  - platform: hx711
+    id: weight_sensor2
+    name: "HX711 Value"
+    unit_of_measurement: "kg"
+    icon: "mdi:weight-kilogram"
+    dout_pin: 9 #HX711 - DT pin
+    clk_pin: 8  #HX711 - SCK pin
+    gain: 128
+    update_interval: 5s
+    accuracy_decimals: 2
+    on_value_range:
+        - below: 0.5
+          then:
+            - output.turn_on: led
+        - above: 1.0
+          then:
+            - output.turn_off: led
+    filters:
+      - calibrate_linear:
+          - 46031 -> 0  #Raw reading when the weight sensor has no weigth on it
+          - -189870 -> 2  #Raw reading of an object with a known wight
+      - median:
+          window_size: 10 #calculate median based on the last 10 readings
 #InternalTemperature
   - platform: internal_temperature
     name: "Internal Temperature"
@@ -167,8 +210,14 @@ sensor:
     accuracy_decimals: 2
 
 hempy:
-  id: hempy1
-  weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
-  start_watering_weight: 2.0
-  stop_watering_weight: 3.0
-  update_interval: 5s
+  - id: hempy1
+    weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
+    start_watering_weight: 2.0
+    stop_watering_weight: 3.0
+    update_interval: 5s
+
+  - id: hempy2
+    weight_sensor: weight_sensor2  # Reference the second weight sensor
+    start_watering_weight: 1.5
+    stop_watering_weight: 2.5
+    update_interval: 5s

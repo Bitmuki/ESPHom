@@ -7,11 +7,11 @@ from esphome.const import (
 
 # Define a namespace for the component
 hempy_ns = cg.esphome_ns.namespace('hempy')
-HempyComponent = hempy_ns.class_('HempyComponent', cg.PollingComponent)
+HempyBucket = hempy_ns.class_('HempyBucket', cg.PollingComponent)
 
 # Configuration schema
 CONFIG_SCHEMA = cv.Schema({
-    cv.GenerateID(): cv.declare_id(HempyComponent),
+    cv.GenerateID(): cv.declare_id(HempyBucket),
     cv.Required('weight_sensor'): cv.use_id(sensor.Sensor),
     cv.Optional('start_watering_weight', default=0.0): cv.float_,
     cv.Optional('stop_watering_weight', default=0.0): cv.float_,
