@@ -40,9 +40,11 @@ class HempyBucket : public PollingComponent {
 };
 
 // This function is called to register the custom component with ESPHome
+/*
 extern "C" void register_hempy() {
   esphome::ComponentFactory::get().register_component<HempyBucket>("hempy");
   }
+  */
 
 }  // namespace hempy
 }  // namespace esphome

@@ -18,9 +18,10 @@ void HempyBucket::update() {
   } else {
     ESP_LOGW("hempy", "No weight sensor available");
   }
-  update_state(State);
+  //update_state(State);
 }
 
+/*
 void HempyBucket::update_state(HempyStates NewState)
 {
   bool BlockOverWritingState = false; //Used when a state transitions to a new state
@@ -114,6 +115,8 @@ void HempyBucket::update_state(HempyStates NewState)
     State = NewState;
   }
 }
+
+*/
 
 // Calibrates the 0 reading to the current reaiding of the weight sensor
 void HempyBucket::tare_weight_scale()
