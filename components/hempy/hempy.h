@@ -39,5 +39,10 @@ class HempyBucket : public PollingComponent {
   float tare_weight_offset_{0.0}; // Updated when tare_weight_scale() is called
 };
 
+// This function is called to register the custom component with ESPHome
+extern "C" void register_hempy() {
+  esphome::ComponentFactory::get().register_component<HempyBucket>("hempy");
+  }
+
 }  // namespace hempy
 }  // namespace esphome

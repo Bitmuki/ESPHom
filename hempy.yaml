@@ -210,14 +210,15 @@ sensor:
     accuracy_decimals: 2
 
 hempy:
-  - id: hempy1
-    weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
-    start_watering_weight: 2.0
-    stop_watering_weight: 3.0
-    update_interval: 5s
+  id: hempy1
+  weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
+  start_watering_weight: 2.0
+  stop_watering_weight: 3.0
+  update_interval: 5s
 
-  - id: hempy2
-    weight_sensor: weight_sensor2  # Reference the second weight sensor
-    start_watering_weight: 1.5
-    stop_watering_weight: 2.5
-    update_interval: 5s
+#    
+#  - id: hempy2
+#    weight_sensor: weight_sensor2
+#    start_watering_weight: 1.5
+#    stop_watering_weight: 2.5
+#    update_interval: 5s

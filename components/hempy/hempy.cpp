@@ -6,7 +6,6 @@ namespace hempy {
 HempyBucket::HempyBucket() : PollingComponent(1000), weight_sensor_(nullptr), start_watering_weight_(0.0), stop_watering_weight_(0.0) {}  // Constructor
 
 void HempyBucket::setup() {
-  App.register_component(new HempyBucket());
   ESP_LOGI("hempy", "Hempy component initialized with StartWateringWeight: %.2f, StopWateringWeight: %.2f",
            start_watering_weight_, stop_watering_weight_);
 }
@@ -19,10 +18,10 @@ void HempyBucket::update() {
   } else {
     ESP_LOGW("hempy", "No weight sensor available");
   }
-  updateState(State);
+  update_state(State);
 }
 
-void HempyBucket::updateState(HempyStates NewState)
+void HempyBucket::update_state(HempyStates NewState)
 {
   bool BlockOverWritingState = false; //Used when a state transitions to a new state
   if (State != NewState)
@@ -55,7 +54,7 @@ void HempyBucket::updateState(HempyStates NewState)
       {
         if (BucketWasteReservoir->setReserved())
         {
-          updateState(HempyStates::WATERING);
+          update_state(HempyStates::WATERING);
           BlockOverWritingState = true;
         }
       }
@@ -79,13 +78,13 @@ void HempyBucket::updateState(HempyStates NewState)
     if (BucketWeightSensor->getWeight(false) >= WetWeight && BucketWeightSensor->getWeight(false) - BucketStartWeight + BucketWasteReservoir->getWeightIncrease() >= *OverflowTarget) //Wet weight reached AND Target overflow's worth of water was added, wait for it to drain
     {
       WateringTime += millis() - PumpOnTimer;
-      updateState(HempyStates::DRAINING);
+      update_state(HempyStates::DRAINING);
       BlockOverWritingState = true;
     }
     if (WateringTime > ((uint32_t)BucketPump->getTimeOut() * 1000) || BucketPump->getState() == WaterPumpStates::DISABLED || BucketWasteReservoir->getState() == WasteReservoirStates::FULL) ///< Disable watering if: Timeout before the waste target was reached, pump failed or the waste reservoir got full
     {
       BucketWasteReservoir->clearReservation();
-      updateState(HempyStates::DISABLED);
+      update_state(HempyStates::DISABLED);
       BlockOverWritingState = true;
     }
     break;
@@ -99,11 +98,11 @@ void HempyBucket::updateState(HempyStates NewState)
         WetWeight = BucketWeightSensor->getWeight(); //Measure wet weight
         DryWeight = WetWeight - *EvaporationTarget;  //Calculate next watering weight
         BucketWasteReservoir->clearReservation();    ///< Free up the waste reservoir
-        updateState(HempyStates::IDLE);
+        update_state(HempyStates::IDLE);
       }
       else
       {
-        updateState(HempyStates::WATERING); /// Continue watering
+        update_state(HempyStates::WATERING); /// Continue watering
       }
       BlockOverWritingState = true;
     }
