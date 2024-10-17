@@ -55,10 +55,10 @@ api:
   #     - lambda: |-
   #         id(hempy1).set_stop_watering_weight(value);
 
-    - service: tare_weight_scale
-      then:
-        - lambda: |-
-            id(hempy1).tare_weight_scale();
+  #  - service: tare_weight_scale
+  #    then:
+  #      - lambda: |-
+  #          id(hempy1).tare_weight_scale();
 
 ota:
   - platform: esphome
@@ -228,8 +228,8 @@ number:
 hempy:
   id: hempy1
   weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
-  start_watering_weight: 2.0
-  stop_watering_weight: 3.0
+  start_watering_weight: start_watering_weight
+  stop_watering_weight: stop_watering_weight
   update_interval: 5s
 
 #    
