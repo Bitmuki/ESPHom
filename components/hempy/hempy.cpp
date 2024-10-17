@@ -18,7 +18,7 @@ void HempyBucket::setup() {
     ESP_LOGD("custom", "Stop watering weight updated to: %.2f", value);
 });
   ESP_LOGI("hempy", "Hempy component initialized with StartWateringWeight: %.2f, StopWateringWeight: %.2f",
-           id(start_watering_weight).state,id(start_watering_weight).state);
+           start_watering_weight_,stop_watering_weight_);
 }
 
 void HempyBucket::update() {
