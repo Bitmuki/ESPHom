@@ -1,6 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import sensor
+from esphome.components import sensor, number
 from esphome.const import CONF_ID
 
 # Define a namespace for the component
@@ -11,11 +11,18 @@ HempyBucket = hempy_ns.class_('HempyBucket', cg.PollingComponent)
 CONFIG_SCHEMA = cv.Schema({
     cv.GenerateID(): cv.declare_id(HempyBucket),
     cv.Required('weight_sensor'): cv.use_id(sensor.Sensor),
+    cv.Required('start_watering_weight'): cv.use_id(number.Number),
+    cv.Required('stop_watering_weight'): cv.use_id(number.Number),
 }).extend(cv.polling_component_schema(default_update_interval="1s"))
 
 # Code generation when configuring the component
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     weight_sensor = await cg.get_variable(config['weight_sensor'])
+    start_weight = await cg.get_variable(config['start_watering_weight'])
+    stop_weight = await cg.get_variable(config['stop_watering_weight'])
+
     cg.add(var.set_weight_sensor(weight_sensor))
+    cg.add(var.set_start_watering_weight(start_weight))
+    cg.add(var.set_stop_watering_weight(stop_weight))
     await cg.register_component(var, config)

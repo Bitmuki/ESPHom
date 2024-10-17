@@ -3,13 +3,13 @@
 namespace esphome {
 namespace hempy {
 
-HempyBucket::HempyBucket() : PollingComponent(1000), weight_sensor_(nullptr) {}  // Constructor
+HempyBucket::HempyBucket() : PollingComponent(1000), weight_sensor_(nullptr), start_watering_weight_(nullptr), stop_watering_weight_(nullptr) {}  // Constructor
 
 
 void HempyBucket::setup() {
 
   ESP_LOGI("hempy", "Hempy component initialized with StartWateringWeight: %.2f, StopWateringWeight: %.2f",
-           id(start_watering_weight).state,id(stop_watering_weight).state);
+          this->start_watering_weight_->state, this->stop_watering_weight_->state);
 }
 
 void HempyBucket::update() {
@@ -17,7 +17,7 @@ void HempyBucket::update() {
   if (this->weight_sensor_) {
     float weight = this->weight_sensor_->state;  // Access the weight sensor's state and apply the offset
     ESP_LOGI("hempy", "State: %s, Weight: %.2f kg, (start: %.2f, stop: %.2f)", 
-             to_text_state(State), weight, id(start_watering_weight).state, id(stop_watering_weight).state); // Log the weight in kg (or the unit configured)
+             to_text_state(State), weight, this->start_watering_weight_->state, this->stop_watering_weight_->state); // Log the weight in kg (or the unit configured)
   } else {
     ESP_LOGW("hempy", "No weight sensor available");
   }

@@ -228,6 +228,8 @@ number:
 hempy:
   id: hempy1
   weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
+  start_watering_weight: 2.0
+  stop_watering_weight: 3.0
   update_interval: 5s
 
 #    
