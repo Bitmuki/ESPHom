@@ -27,7 +27,7 @@ class HempyBucket : public PollingComponent {
   void set_stop_watering_weight(float start_watering_weight) { this->stop_watering_weight_ = start_watering_weight; }
   float get_start_watering_weight() const { return this->start_watering_weight_; }
   float get_stop_watering_weight() const { return this->stop_watering_weight_; }
-  void tare_weight_scale();
+  //void tare_weight_scale();
   const char *to_text_state(HempyStates state);
 
  private:
@@ -36,7 +36,7 @@ class HempyBucket : public PollingComponent {
   uint32_t StateTimer{millis()};      // Measures how much time is spent in a state
   float start_watering_weight_{0.0};
   float stop_watering_weight_{0.0};
-  float tare_weight_offset_{0.0}; // Updated when tare_weight_scale() is called
+  //float tare_weight_offset_{0.0}; // Updated when tare_weight_scale() is called
 };
 
 // This function is called to register the custom component with ESPHome

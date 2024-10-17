@@ -40,20 +40,20 @@ api:
   encryption:
     key: !secret hempy_encryption_key
     
-  services:
-    - service: set_start_watering_weight
-      variables:
-        value: float
-      then:
-        - lambda: |-
-            id(hempy1).set_start_watering_weight(value);
-
-    - service: set_stop_watering_weight
-      variables:
-        value: float
-      then:
-        - lambda: |-
-            id(hempy1).set_stop_watering_weight(value);
+  #services:
+  #  - service: set_start_watering_weight
+  #    variables:
+  #      value: float
+  #    then:
+  #      - lambda: |-
+  #          id(hempy1).set_start_watering_weight(value);
+  #
+  #  - service: set_stop_watering_weight
+  #   variables:
+  #     value: float
+  #   then:
+  #     - lambda: |-
+  #         id(hempy1).set_stop_watering_weight(value);
 
     - service: tare_weight_scale
       then:
@@ -151,13 +151,13 @@ sensor:
     gain: 128
     update_interval: 5s
     accuracy_decimals: 2
-    on_value_range:
-        - below: 0.5
-          then:
-            - output.turn_on: led
-        - above: 1.0
-          then:
-            - output.turn_off: led
+   # on_value_range:
+      #  - below: 0.5
+      #    then:
+      #      - output.turn_on: led
+      #  - above: 1.0
+      #    then:
+      #      - output.turn_off: led
     filters:
       - calibrate_linear:
           - 46031 -> 0  #Raw reading when the weight sensor has no weigth on it
@@ -193,21 +193,35 @@ sensor:
 #    accuracy_decimals: 2
 #    update_interval: never
 
+ # - platform: template
+ #   name: "Start Watering Weight"
+ #   lambda: |-
+ #     return id(hempy1).get_start_watering_weight();
+ #   update_interval: 5s
+ #   unit_of_measurement: "kg"
+ #   accuracy_decimals: 2
+
+ # - platform: template
+ #   name: "Stop Watering Weight"
+ #   lambda: |-
+ #     return id(hempy1).get_stop_watering_weight();
+ #   update_interval: 5s
+ #   unit_of_measurement: "kg"
+ #   accuracy_decimals: 2
+
+number:
   - platform: template
     name: "Start Watering Weight"
-    lambda: |-
-      return id(hempy1).get_start_watering_weight();
-    update_interval: 5s
-    unit_of_measurement: "kg"
-    accuracy_decimals: 2
-
+    id: start_watering_weight
+    min_value: 0
+    max_value: 20
+    step: 0.1
   - platform: template
     name: "Stop Watering Weight"
-    lambda: |-
-      return id(hempy1).get_stop_watering_weight();
-    update_interval: 5s
-    unit_of_measurement: "kg"
-    accuracy_decimals: 2
+    id: stop_watering_weight
+    min_value: 0
+    max_value: 25
+    step: 0.1
 
 hempy:
   id: hempy1
