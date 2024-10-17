@@ -27,14 +27,14 @@ class HempyBucket : public PollingComponent {
   void set_stop_watering_weight(float start_watering_weight) { this->stop_watering_weight_ = start_watering_weight; }
   float get_start_watering_weight() const { return this->start_watering_weight_; }
   float get_stop_watering_weight() const { return this->stop_watering_weight_; }
-  //void tare_weight_scale();
+  //void tare_weight_scale(); //TODO: remove this
   const char *to_text_state(HempyStates state);
 
  private:
-  sensor::Sensor *weight_sensor_;
+  sensor::Sensor *weight_sensor_;  // Reference to the weight sensor
   HempyStates State{HempyStates::IDLE}; // Stores the current state of the hempy bucket
   uint32_t StateTimer{millis()};      // Measures how much time is spent in a state
-  float start_watering_weight_{0.0};
+  float start_watering_weight_{0.0};  // Brace initializer default value
   float stop_watering_weight_{0.0};
   //float tare_weight_offset_{0.0}; // Updated when tare_weight_scale() is called
 };

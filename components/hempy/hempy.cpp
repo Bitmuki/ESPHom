@@ -5,30 +5,30 @@ namespace hempy {
 
 HempyBucket::HempyBucket() : PollingComponent(1000), weight_sensor_(nullptr), start_watering_weight_(0.0), stop_watering_weight_(0.0) {}  // Constructor
 
-void HempyBucket::setup() {
-  id(start_watering_weight).add_on_state_callback([this](float value) {
-    // Handle the change in start_watering_weight
-    ESP_LOGD("custom", "Start watering weight updated to: %.2f", value);
-});
 
-id(stop_watering_weight).add_on_state_callback([this](float value) {
-    // Handle the change in stop_watering_weight
+void HempyBucket::setup() {
+  // Handle the change in start_watering_weight
+  id(start_watering_weight).add_on_state_callback([this](float value) {    
+    this->start_watering_weight_ = value; // Update member variable
+    ESP_LOGD("custom", "Start watering weight updated to: %.2f", value);
+  });
+  // Handle the change in stop_watering_weight
+  id(stop_watering_weight).add_on_state_callback([this](float value) {    
+    this->stop_watering_weight_ = value; // Update member variable
     ESP_LOGD("custom", "Stop watering weight updated to: %.2f", value);
 });
-
   ESP_LOGI("hempy", "Hempy component initialized with StartWateringWeight: %.2f, StopWateringWeight: %.2f",
            id(start_watering_weight).state,id(start_watering_weight).state);
 }
 
 void HempyBucket::update() {
-   if (this->weight_sensor_) {
+  if (this->weight_sensor_) {
     float weight = this->weight_sensor_->state;  // Access the weight sensor's state and apply the offset
     ESP_LOGI("hempy", "State: %s, Weight: %.2f kg, (start: %.2f, stop: %.2f)", 
-             to_text_state(State),weight,start_watering_weight_, stop_watering_weight_); // Log the weight in kg (or the unit configured)
+             to_text_state(State), weight, start_watering_weight_, stop_watering_weight_); // Log the weight in kg (or the unit configured)
   } else {
     ESP_LOGW("hempy", "No weight sensor available");
   }
-  //update_state(State);
 }
 
 /*
