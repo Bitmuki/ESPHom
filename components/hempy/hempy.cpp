@@ -3,7 +3,7 @@
 namespace esphome {
 namespace hempy {
 
-HempyBucket::HempyBucket() : PollingComponent(1000), weight_sensor_(nullptr), start_watering_weight_(0.0), stop_watering_weight_(0.0) {}  // Constructor
+HempyBucket::HempyBucket() : PollingComponent(1000), weight_sensor_(nullptr) {}  // Constructor
 
 
 void HempyBucket::setup() {

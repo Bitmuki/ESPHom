@@ -31,6 +31,6 @@ class HempyBucket : public PollingComponent {
   HempyStates State{HempyStates::IDLE}; // Stores the current state of the hempy bucket
   uint32_t StateTimer{millis()};      // Measures how much time is spent in a state
 
-}
+};
 }  // namespace hempy
 }  // namespace esphome
