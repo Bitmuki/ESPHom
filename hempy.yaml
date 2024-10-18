@@ -66,18 +66,12 @@ output:
     pin: 10  # Relay's IN pin
     id: relay_pump1
     inverted: true   # Negative logic (false turns it on)
-  - platform: gpio  # Relay to power water pump for Bucket 2
-    pin: 11   # Relay's IN pin
-    id: relay_pump2
-    inverted: true   # Negative logic (false turns it on)
 
 switch:
   - platform: output
+    id: waterpump1
     name: "Pump 1"
-    output: relay_pump1    
-  - platform: output
-    name: "Pump 2"
-    output: relay_pump2
+    output: relay_pump1
 
 rtttl:  #Ring Tone Text Transfer Language
   output: buzzer
@@ -148,6 +142,7 @@ number:
 hempy:
   id: hempy1
   weight_sensor: weight_sensor1  # Reference the weight sensor by its ID
+  waterpump: waterpump1
   start_watering_weight: start_watering_weight
   stop_watering_weight: stop_watering_weight
   update_interval: 5s
