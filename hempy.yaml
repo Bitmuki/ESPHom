@@ -39,36 +39,18 @@ text_sensor:
 api:
   encryption:
     key: !secret hempy_encryption_key
-    
-  #services:
-  #  - service: set_start_watering_weight
-  #    variables:
-  #      value: float
-  #    then:
-  #      - lambda: |-
-  #          id(hempy1).set_start_watering_weight(value);
-  #
-  #  - service: set_stop_watering_weight
-  #   variables:
-  #     value: float
-  #   then:
-  #     - lambda: |-
-  #         id(hempy1).set_stop_watering_weight(value);
 
-  #  - service: tare_weight_scale
-  #    then:
-  #      - lambda: |-
-  #          id(hempy1).tare_weight_scale();
-
+# Enable Over The Air updates
 ota:
   - platform: esphome
     password: !secret hempy_ota_password
 
+# Setup WiFi connection
 wifi:
   ssid: !secret hempy_wifi_ssid
   password: !secret hempy_wifi_password
 
-  # Enable fallback hotspot in case WiFi connection fails
+# Enable fallback hotspot in case WiFi connection fails
   ap:
     ssid: "Hempy Fallback Hotspot"
     password: !secret hempy_wifi_password
@@ -92,8 +74,7 @@ output:
 switch:
   - platform: output
     name: "Pump 1"
-    output: relay_pump1
-    
+    output: relay_pump1    
   - platform: output
     name: "Pump 2"
     output: relay_pump2
@@ -110,13 +91,12 @@ interval:
       - delay: 1000ms
       - output.turn_off: led
 
-# Example configuration entry
 sensor:
   #Debug
   - platform: debug
     loop_time:
       name: "Loop Time"    
-  #HX711 - Bucket 1
+  #HX711 - Bucket 1 weight sensor
   - platform: hx711
     id: weight_sensor1
     name: "HX711 Value"
@@ -126,45 +106,12 @@ sensor:
     clk_pin: 6
     gain: 128
     update_interval: 5s
-    accuracy_decimals: 2
-    on_value_range:
-        - below: 0.5
-          then:
-            - output.turn_on: led
-        - above: 1.0
-          then:
-            - output.turn_off: led
+    accuracy_decimals: 2   
     filters:
       - calibrate_linear:
-          - -75570 -> 0  #Raw reading when the weight sensor has no weigth on it
-          - -227570 -> 2  #Raw reading of an object with a known wight
-      - median:
-          window_size: 10 #calculate median based on the last 10 readings
-  #HX711 - Bucket 2
-  - platform: hx711
-    id: weight_sensor2
-    name: "HX711 Value"
-    unit_of_measurement: "kg"
-    icon: "mdi:weight-kilogram"
-    dout_pin: 9 #HX711 - DT pin
-    clk_pin: 8  #HX711 - SCK pin
-    gain: 128
-    update_interval: 5s
-    accuracy_decimals: 2
-   # on_value_range:
-      #  - below: 0.5
-      #    then:
-      #      - output.turn_on: led
-      #  - above: 1.0
-      #    then:
-      #      - output.turn_off: led
-    filters:
-      - calibrate_linear:
-          - 46031 -> 0  #Raw reading when the weight sensor has no weigth on it
-          - -189870 -> 2  #Raw reading of an object with a known wight
-      - median:
-          window_size: 10 #calculate median based on the last 10 readings
-#InternalTemperature
+          - -73300 -> 0  #Raw reading when the weight sensor has no weigth on it
+          - -221100 -> 2  #Raw reading of an object with a known wight      
+   #Internal temperature sensor
   - platform: internal_temperature
     name: "Internal Temperature"
     unit_of_measurement: "°C"
@@ -177,37 +124,8 @@ sensor:
       - sliding_window_moving_average:
           window_size: 15
           send_every: 15
-
-#
-#  - platform: template
-#    name: "Start Watering Weight"
-#    id: start_watering_weight
-#    unit_of_measurement: "kg"
-#    accuracy_decimals: 2
-#    update_interval: never
-
-#  - platform: template
-#    name: "Stop Watering Weight"
-#    id: stop_watering_weight
-#    unit_of_measurement: "kg"
-#    accuracy_decimals: 2
-#    update_interval: never
-
- # - platform: template
- #   name: "Start Watering Weight"
- #   lambda: |-
- #     return id(hempy1).get_start_watering_weight();
- #   update_interval: 5s
- #   unit_of_measurement: "kg"
- #   accuracy_decimals: 2
-
- # - platform: template
- #   name: "Stop Watering Weight"
- #   lambda: |-
- #     return id(hempy1).get_stop_watering_weight();
- #   update_interval: 5s
- #   unit_of_measurement: "kg"
- #   accuracy_decimals: 2
+      # - median:
+      #   window_size: 10 #calculate median based on the last 10 readings
 
 number:
   - platform: template
@@ -233,10 +151,3 @@ hempy:
   start_watering_weight: start_watering_weight
   stop_watering_weight: stop_watering_weight
   update_interval: 5s
-
-#    
-#  - id: hempy2
-#    weight_sensor: weight_sensor2
-#    start_watering_weight: 1.5
-#    stop_watering_weight: 2.5
-#    update_interval: 5s
