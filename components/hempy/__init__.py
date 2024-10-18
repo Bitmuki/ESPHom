@@ -19,10 +19,10 @@ CONFIG_SCHEMA = cv.Schema({
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     weight_sensor = await cg.get_variable(config['weight_sensor'])
-    start_weight = await cg.get_variable(config['start_watering_weight'])
-    stop_weight = await cg.get_variable(config['stop_watering_weight'])
+    start_watering_weight = await cg.get_variable(config['start_watering_weight'])
+    stop_watering_weight = await cg.get_variable(config['stop_watering_weight'])
 
     cg.add(var.set_weight_sensor(weight_sensor))
-    cg.add(var.set_start_watering_weight(start_weight))
-    cg.add(var.set_stop_watering_weight(stop_weight))
+    cg.add(var.set_start_watering_weight(start_watering_weight))
+    cg.add(var.set_stop_watering_weight(stop_watering_weight))
     await cg.register_component(var, config)

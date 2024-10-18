@@ -26,8 +26,8 @@ class HempyBucket : public PollingComponent {
   void update_state(HempyStates NewState);
   const char *to_text_state(HempyStates state);
   void set_weight_sensor(sensor::Sensor *weight_sensor) { this->weight_sensor_ = weight_sensor; }
-  void set_start_watering_weight(number::Number *start_weight) { this->start_watering_weight_ = start_weight; }
-  void set_stop_watering_weight(number::Number *stop_weight) { this->stop_watering_weight_ = stop_weight; }
+  void set_start_watering_weight(number::Number *start_watering_weight) { this->start_watering_weight_ = start_watering_weight; }
+  void set_stop_watering_weight(number::Number *stop_watering_weight) { this->stop_watering_weight_ = stop_watering_weight; }
 
 
  private:
