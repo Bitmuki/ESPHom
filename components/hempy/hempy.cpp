@@ -36,9 +36,9 @@ void HempyBucket::update_state(HempyStates NewState)
     this->pump_switch_->turn_off();
     break;
   case HempyStates::IDLE:
-    BucketPump->stopPump(true);
-    if (BucketPump->getState() != WaterPumpStates::DISABLED && (start_watering_weight_->state <= 0 || this->weight_sensor_->state <= start_watering_weight_->state))
-    {
+    this->pump_switch_->turn_off();
+    if (start_watering_weight_->state <= 0 || this->weight_sensor_->state <= start_watering_weight_->state)
+    {  //BucketPump->getState() != WaterPumpStates::DISABLED && 
       //if (BucketWeightSensor->getWeight() >= DryWeight - *OverflowTarget) ///< Filters out waterings triggered by a disconnected weight sensor
       {
         //if (BucketWasteReservoir->setReserved())
