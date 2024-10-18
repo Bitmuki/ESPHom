@@ -27,5 +27,5 @@ async def to_code(config):
     cg.add(var.set_weight_sensor(weight_sensor))
     cg.add(var.set_start_watering_weight(start_watering_weight))
     cg.add(var.set_stop_watering_weight(stop_watering_weight))
-    cg.add(var.set_pump_switch(waterpump))  
+    cg.add(var.set_waterpump(waterpump))  
     await cg.register_component(var, config)

@@ -33,10 +33,10 @@ void HempyBucket::update_state(HempyStates NewState)
   switch (NewState)
   {
   case HempyStates::DISABLED:
-    this->pump_switch_->turn_off();
+    this->waterpump_->turn_off();
     break;
   case HempyStates::IDLE:
-    this->pump_switch_->turn_off();
+    this->waterpump_->turn_off();
     if (start_watering_weight_->state <= 0 || this->weight_sensor_->state <= start_watering_weight_->state)
     {  //BucketPump->getState() != WaterPumpStates::DISABLED && 
       //if (BucketWeightSensor->getWeight() >= DryWeight - *OverflowTarget) ///< Filters out waterings triggered by a disconnected weight sensor
@@ -62,7 +62,7 @@ void HempyBucket::update_state(HempyStates NewState)
       {
         PumpOnTimer = millis(); ///Start measuring the pump ON time for this cycle
       }
-      this->pump_switch_->turn_on();
+      this->waterpump_->turn_on();
     }
     if (this->weight_sensor_->state >= stop_watering_weight_->state) // TODO: add new logic instead of: && BucketWeightSensor->getWeight(false) - BucketStartWeight + BucketWasteReservoir->getWeightIncrease() >= *OverflowTarget) //Wet weight reached AND Target overflow's worth of water was added, wait for it to drain
     {
@@ -80,7 +80,7 @@ void HempyBucket::update_state(HempyStates NewState)
     */
     break;
   case HempyStates::DRAINING:
-    this->pump_switch_->turn_off();
+    this->waterpump_->turn_off();
     State = HempyStates::DRAINING;                                 //Store the new state immediately - Only important when DrainWaitTime is set to 0
     if (millis() - StateTimer > ((uint32_t)DrainWaitTime * 1000)) ///< Waiting for the water to drain
     {
