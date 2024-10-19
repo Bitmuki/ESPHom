@@ -4,8 +4,8 @@
 #include "esphome/core/component.h"
 #include "esphome/core/log.h"
 #include "esphome/components/sensor/sensor.h"
-#include "esphome/core/application.h"
 #include "esphome/components/number/number.h"
+#include "esphome/components/switch_/switch.h" // Include the correct header
 
 namespace esphome {
 namespace hempy {
