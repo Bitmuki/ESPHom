@@ -20,8 +20,7 @@ enum class HempyStates
 
 class HempyBucket : public PollingComponent {
  public:
-  HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight,
-                number::Number *stopWateringWeight, switch::Switch *waterPump);
+  HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight, number::Number *stopWateringWeight, switch::Switch *waterPump);
   void setup() override;
   void update() override;
   void update_state(HempyStates NewState);
@@ -40,6 +39,7 @@ class HempyBucket : public PollingComponent {
   switch_::Switch *WaterPump;  // Reference to the relay controlling the water pump
   HempyStates State{HempyStates::IDLE}; // Stores the current state of the hempy bucket
   uint32_t StateTimer = 0;  // Track how much time is spent in one State
+  uint32_t PumpOnTimer = 0;
   uint32_t WateringTimer = 0;  // Track how long watering pump is on in total (all water-drain cycles)
   uint32_t WateringTimeout = 30;  // seconds - Maximum total pump ON time (all water-drain cycles), if watering is not finished the pump is considered broken.  TODO: make this user configurable from HA dashboard
   uint32_t DrainWaitTime = 30; // seconds - how long to wait for the water to drain.  TODO: make this user configurable from HA dashboard

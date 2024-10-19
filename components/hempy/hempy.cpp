@@ -3,11 +3,7 @@
 namespace esphome {
 namespace hempy {
 
-HempyBucket::HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight,
-                number::Number *stopWateringWeight, switch::Switch *waterPump)
-        : PollingComponent(1000),  // Polling every 1000ms (1 second)
-          WeightSensor(weightSensor), StartWateringWeight(startWateringWeight),
-          StopWateringWeight(stopWateringWeight), WaterPumpaterPump_(waterPump) {}
+HempyBucket::HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight, number::Number *stopWateringWeight, switch::Switch *waterPump): PollingComponent(1000),WeightSensor(weightSensor),StartWateringWeight(startWateringWeight),StopWateringWeight(stopWateringWeight), WaterPump(waterPump) {}
 
 void HempyBucket::setup() {
 
