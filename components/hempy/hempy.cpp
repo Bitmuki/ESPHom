@@ -3,8 +3,6 @@
 namespace esphome {
 namespace hempy {
 
-HempyBucket::HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight, number::Number *stopWateringWeight, switch::Switch *waterPump): PollingComponent(1000),WeightSensor(weightSensor),StartWateringWeight(startWateringWeight),StopWateringWeight(stopWateringWeight), WaterPump(waterPump) {}
-
 void HempyBucket::setup() {
 
   ESP_LOGI("hempy", "Hempy component initialized with StartWateringWeight: %.2f, StopWateringWeight: %.2f",
@@ -30,11 +28,11 @@ void HempyBucket::update_state(HempyStates NewState){
   switch (NewState)
   {
   case HempyStates::DISABLED:
-    if(this->WaterPump->is_on())
+    if(this->WaterPump->state)
       this->WaterPump->turn_off();
     break;
   case HempyStates::IDLE:
-     if(this->WaterPump->is_on())
+     if(this->WaterPump->state)
       this->WaterPump->turn_off();
     if (StartWateringWeight->state <= 0 || this->WeightSensor->state <= StartWateringWeight->state)
     {  //BucketPump->getState() != WaterPumpStates::DISABLED && 

@@ -5,7 +5,7 @@
 #include "esphome/core/log.h"
 #include "esphome/components/sensor/sensor.h"
 #include "esphome/components/number/number.h"
-#include "esphome/components/switch_/switch.h" // Include the correct header
+#include "esphome/components/switch/switch.h"
 
 namespace esphome {
 namespace hempy {
@@ -18,9 +18,11 @@ enum class HempyStates
   DRAINING
 };
 
+
+
 class HempyBucket : public PollingComponent {
  public:
-  HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight, number::Number *stopWateringWeight, switch::Switch *waterPump);
+  HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight, number::Number *stopWateringWeight, switch_::Switch *waterPump): PollingComponent(1000),WeightSensor(weightSensor),StartWateringWeight(startWateringWeight),StopWateringWeight(stopWateringWeight), WaterPump(waterPump) {}
   void setup() override;
   void update() override;
   void update_state(HempyStates NewState);
