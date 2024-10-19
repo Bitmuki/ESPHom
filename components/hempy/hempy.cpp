@@ -3,24 +3,25 @@
 namespace esphome {
 namespace hempy {
 
-HempyBucket::HempyBucket() : PollingComponent(1000), weight_sensor_(nullptr), start_watering_weight_(nullptr), stop_watering_weight_(nullptr), waterpump_(nullptr) {}  // Constructor
+HempyBucket::HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight,
+                number::Number *stopWateringWeight, switch::Switch *waterPump)
+        : PollingComponent(1000),  // Polling every 1000ms (1 second)
+          WeightSensor(weightSensor), StartWateringWeight(startWateringWeight),
+          StopWateringWeight(stopWateringWeight), WaterPumpaterPump_(waterPump) {}
 
 void HempyBucket::setup() {
 
   ESP_LOGI("hempy", "Hempy component initialized with StartWateringWeight: %.2f, StopWateringWeight: %.2f",
-          this->start_watering_weight_->state, this->stop_watering_weight_->state);
+          this->StartWateringWeight->state, this->StopWateringWeight->state);
 }
 
 void HempyBucket::update() {
   update_state(State);
   ESP_LOGI("hempy", "State: %s, Weight: %.2f kg, (start: %.2f, stop: %.2f)", 
-             to_text_state(State), this->weight_sensor_->state, this->start_watering_weight_->state, this->stop_watering_weight_->state); // Log the weight in kg (or the unit configured)
-  
+             to_text_state(State), this->WeightSensor->state, this->StartWateringWeight->state, this->StopWateringWeight->state); // Log the weight in kg (or the unit configured)
 }
 
-
-void HempyBucket::update_state(HempyStates NewState)
-{
+void HempyBucket::update_state(HempyStates NewState){
   bool BlockOverWritingState = false; //Used when a state transitions to a new state
   if (State != NewState)
   {
@@ -33,11 +34,13 @@ void HempyBucket::update_state(HempyStates NewState)
   switch (NewState)
   {
   case HempyStates::DISABLED:
-    this->waterpump_->turn_off();
+    if(this->WaterPump->is_on())
+      this->WaterPump->turn_off();
     break;
   case HempyStates::IDLE:
-    this->waterpump_->turn_off();
-    if (start_watering_weight_->state <= 0 || this->weight_sensor_->state <= start_watering_weight_->state)
+     if(this->WaterPump->is_on())
+      this->WaterPump->turn_off();
+    if (StartWateringWeight->state <= 0 || this->WeightSensor->state <= StartWateringWeight->state)
     {  //BucketPump->getState() != WaterPumpStates::DISABLED && 
       //if (BucketWeightSensor->getWeight() >= DryWeight - *OverflowTarget) ///< Filters out waterings triggered by a disconnected weight sensor
       {
@@ -52,7 +55,7 @@ void HempyBucket::update_state(HempyStates NewState)
   case HempyStates::WATERING:
     if (State != NewState)
     {
-      BucketStartWeight = this->weight_sensor_->state;              // Store the bucket weight before starting the pump
+      BucketStartWeight = this->WeightSensor->state;              // Store the bucket weight before starting the pump
       if (State == HempyStates::IDLE || State == HempyStates::DISABLED) // First time entering the WATERING-DRIAINING cycles
       {
         PumpOnTimer = millis(); ///Start measuring the pump ON time for this cycle
@@ -62,9 +65,9 @@ void HempyBucket::update_state(HempyStates NewState)
       {
         PumpOnTimer = millis(); ///Start measuring the pump ON time for this cycle
       }
-      this->waterpump_->turn_on();
+      this->WaterPump->turn_on();
     }
-    if (this->weight_sensor_->state >= stop_watering_weight_->state) // TODO: add new logic instead of: && BucketWeightSensor->getWeight(false) - BucketStartWeight + BucketWasteReservoir->getWeightIncrease() >= *OverflowTarget) //Wet weight reached AND Target overflow's worth of water was added, wait for it to drain
+    if (this->WeightSensor->state >= StopWateringWeight->state) // TODO: add new logic instead of: && BucketWeightSensor->getWeight(false) - BucketStartWeight + BucketWasteReservoir->getWeightIncrease() >= *OverflowTarget) //Wet weight reached AND Target overflow's worth of water was added, wait for it to drain
     {
       WateringTimer += millis() - PumpOnTimer;
       update_state(HempyStates::DRAINING);
@@ -80,7 +83,7 @@ void HempyBucket::update_state(HempyStates NewState)
     */
     break;
   case HempyStates::DRAINING:
-    this->waterpump_->turn_off();
+    this->WaterPump->turn_off();
     State = HempyStates::DRAINING;                                 //Store the new state immediately - Only important when DrainWaitTime is set to 0
     if (millis() - StateTimer > ((uint32_t)DrainWaitTime * 1000)) ///< Waiting for the water to drain
     {
@@ -113,8 +116,8 @@ void HempyBucket::update_state(HempyStates NewState)
 /*
 void HempyBucket::tare_weight_scale()
 {
-  if (this->weight_sensor_ && weight_sensor_->has_state()) {
-    tare_weight_offset_ = this->weight_sensor_->state;  // store the current reading as the offset
+  if (this->WeightSensor && WeightSensor->has_state()) {
+    tare_weight_offset_ = this->WeightSensor->state;  // store the current reading as the offset
     ESP_LOGI("hempy", "Offset: %.2f kg", tare_weight_offset_); // Log the weight in kg (or the unit configured)
   } 
 }

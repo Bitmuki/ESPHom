@@ -24,8 +24,8 @@ async def to_code(config):
     stop_watering_weight = await cg.get_variable(config['stop_watering_weight'])
     waterpump = await cg.get_variable(config['waterpump'])
 
-    cg.add(var.set_weight_sensor(weight_sensor))
-    cg.add(var.set_start_watering_weight(start_watering_weight))
-    cg.add(var.set_stop_watering_weight(stop_watering_weight))
-    cg.add(var.set_waterpump(waterpump))  
+#    cg.add(var.set_weight_sensor(weight_sensor))
+#    cg.add(var.set_start_watering_weight(start_watering_weight))
+#    cg.add(var.set_stop_watering_weight(stop_watering_weight))
+#    cg.add(var.set_waterpump(waterpump))  
     await cg.register_component(var, config)

@@ -20,28 +20,32 @@ enum class HempyStates
 
 class HempyBucket : public PollingComponent {
  public:
-  HempyBucket();
+  HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight,
+                number::Number *stopWateringWeight, switch::Switch *waterPump);
   void setup() override;
   void update() override;
   void update_state(HempyStates NewState);
   const char *to_text_state(HempyStates state);
-  void set_weight_sensor(sensor::Sensor *weight_sensor) { this->weight_sensor_ = weight_sensor; }
-  void set_start_watering_weight(number::Number *start_watering_weight) { this->start_watering_weight_ = start_watering_weight; }
-  void set_stop_watering_weight(number::Number *stop_watering_weight) { this->stop_watering_weight_ = stop_watering_weight; }
-  void set_waterpump(switch_::Switch *waterpump) { this->waterpump_ = waterpump; }  // Set the pump switch reference
-
+  /*
+  void set_weight_sensor(sensor::Sensor *weight_sensor) { this->WeightSensor = weight_sensor; }
+  void set_start_watering_weight(number::Number *start_watering_weight) { this->StartWateringWeight = start_watering_weight; }
+  void set_stop_watering_weight(number::Number *stop_watering_weight) { this->StopWateringWeight = stop_watering_weight; }
+  void set_waterpump(switch_::Switch *waterpump) { this->WaterPump = waterpump; }  // Set the pump switch reference
+*/
 
  private:
-  sensor::Sensor *weight_sensor_;  // Reference to the weight sensor
-  number::Number *start_watering_weight_;  // Reference to start watering weight
-  number::Number *stop_watering_weight_;   // Reference to stop watering weigh
-  switch_::Switch *waterpump_;  // Reference to the relay controlling the water pump
+  sensor::Sensor *WeightSensor;  // Reference to the weight sensor
+  number::Number *StartWateringWeight;  // Reference to start watering weight
+  number::Number *StopWateringWeight;   // Reference to stop watering weigh
+  switch_::Switch *WaterPump;  // Reference to the relay controlling the water pump
   HempyStates State{HempyStates::IDLE}; // Stores the current state of the hempy bucket
   uint32_t StateTimer = 0;  // Track how much time is spent in one State
-  uint32_t PumpOnTimer = 0;  // Track how long watering pump is on continuously (one water-drain cycle)
   uint32_t WateringTimer = 0;  // Track how long watering pump is on in total (all water-drain cycles)
-  float BucketStartWeight = 0; //Store the start weight of the bucket before starting the water-drain cycles
-  uint32_t DrainWaitTime = 30; //Seconds - how long to wait for the water to drain.  TODO: make this user configurable from HA dashboard
+  uint32_t WateringTimeout = 30;  // seconds - Maximum total pump ON time (all water-drain cycles), if watering is not finished the pump is considered broken.  TODO: make this user configurable from HA dashboard
+  uint32_t DrainWaitTime = 30; // seconds - how long to wait for the water to drain.  TODO: make this user configurable from HA dashboard
+  float BucketStartWeight = 0; // Store the start weight of the bucket before starting the water-drain cycles
+  float OverflowTarget = 0.1; //kg - How much water should drain into the waste reservoir before considering the watering cycle finished 
+
 };
 
 }  // namespace hempy
