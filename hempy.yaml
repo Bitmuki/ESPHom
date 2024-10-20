@@ -13,12 +13,19 @@ external_components:
 esphome:
   name: hempy
   friendly_name: Hempy
+  build_path: "../config/esphome/build"
   on_boot:
     priority: 10
     then:
-     # -  lambda: |-
-     #     auto hempy1 = new hempy::HempyBucket(id(bucket1_weight_sensor), id(bucket1_start_watering_weight), id(bucket1_stop_watering_weight), id(bucket1_waterpump));
-     #     App.register_component(hempy1);
+      #-  lambda: |-
+      #      hempy::HempyBucket *hempy1;
+      #      App.pre_setup("hempy", "Hempy", "", "", __DATE__ ", " __TIME__, false);
+      #      hempy1 = new hempy::HempyBucket(bucket1_weight_sensor, bucket1_start_watering_weight, bucket1_stop_watering_weight, bucket1_waterpump);
+      #      hempy1->set_update_interval(5000);
+      #      hempy1->set_component_source("hempy");
+      #      App.register_component(hempy1);
+      #     auto hempy1 = new hempy::HempyBucket(id(bucket1_weight_sensor), id(bucket1_start_watering_weight), id(bucket1_stop_watering_weight), id(bucket1_waterpump));
+      #     App.register_component(hempy1);
       #src/esphome/components/hempy/hempy.h:23:3: note: candidate: 'esphome::hempy::HempyBucket::HempyBucket(esphome::sensor::Sensor*, esphome::number::Number*, esphome::number::Number*, int)'
       - rtttl.play:
           rtttl: 'mario:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,16p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16c7,16p,16c7,16c7,p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16d#6,8p,16d6,8p,16c6'

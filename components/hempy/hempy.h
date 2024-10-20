@@ -22,7 +22,7 @@ enum class HempyStates
 
 class HempyBucket : public PollingComponent {
  public:
-  HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight, number::Number *stopWateringWeight, switch_::Switch *waterPump): PollingComponent(1000),WeightSensor(weightSensor),StartWateringWeight(startWateringWeight),StopWateringWeight(stopWateringWeight), WaterPump(waterPump) {}
+  HempyBucket(sensor::Sensor *weightSensor, number::Number *startWateringWeight, number::Number *stopWateringWeight, switch_::Switch *waterPump): PollingComponent(1000), WeightSensor(weightSensor), StartWateringWeight(startWateringWeight), StopWateringWeight(stopWateringWeight), WaterPump(waterPump) {}
   void setup() override;
   void update() override;
   void update_state(HempyStates NewState);

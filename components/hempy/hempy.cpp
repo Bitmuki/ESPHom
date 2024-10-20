@@ -17,9 +17,10 @@ void HempyBucket::update() {
 
 void HempyBucket::update_state(HempyStates NewState){
   bool BlockOverWritingState = false; //Used when a state transitions to a new state
+  uint32_t CurrentTime = millis();
   if (State != NewState)
   {
-    StateTimer = millis();                         ///< Start measuring the time spent in the new State
+    StateTimer = CurrentTime;                         ///< Start measuring the time spent in the new State
     ESP_LOGI("hempy", "State: %s -> %s", to_text_state(State),to_text_state(NewState));
   }
 
@@ -52,18 +53,18 @@ void HempyBucket::update_state(HempyStates NewState){
       BucketStartWeight = this->WeightSensor->state;              // Store the bucket weight before starting the pump
       if (State == HempyStates::IDLE || State == HempyStates::DISABLED) // First time entering the WATERING-DRIAINING cycles
       {
-        PumpOnTimer = millis(); ///Start measuring the pump ON time for this cycle
+        PumpOnTimer = CurrentTime; ///Start measuring the pump ON time for this cycle
         WateringTimer = 0;       ///Reset the counter that tracks the total pump ON time during the watering process (multiple WATERING-DRAINING cycles)
       }
       if (State == HempyStates::DRAINING) /// The WATERING-DRIAINING cycles are already in progress
       {
-        PumpOnTimer = millis(); ///Start measuring the pump ON time for this cycle
+        PumpOnTimer = CurrentTime; ///Start measuring the pump ON time for this cycle
       }
       this->WaterPump->turn_on();
     }
     if (this->WeightSensor->state >= StopWateringWeight->state) // TODO: add new logic instead of: && BucketWeightSensor->getWeight(false) - BucketStartWeight + BucketWasteReservoir->getWeightIncrease() >= *OverflowTarget) //Wet weight reached AND Target overflow's worth of water was added, wait for it to drain
     {
-      WateringTimer += millis() - PumpOnTimer;
+      WateringTimer += CurrentTime - PumpOnTimer;
       update_state(HempyStates::DRAINING);
       BlockOverWritingState = true;
     }
@@ -79,7 +80,7 @@ void HempyBucket::update_state(HempyStates NewState){
   case HempyStates::DRAINING:
     this->WaterPump->turn_off();
     State = HempyStates::DRAINING;                                 //Store the new state immediately - Only important when DrainWaitTime is set to 0
-    if (millis() - StateTimer > ((uint32_t)DrainWaitTime * 1000)) ///< Waiting for the water to drain
+    if (CurrentTime - StateTimer > ((uint32_t)DrainWaitTime * 1000)) ///< Waiting for the water to drain
     {
       /*      
       if (BucketWasteReservoir->checkTarget(*OverflowTarget)) //Check if target overflow weight is reached
