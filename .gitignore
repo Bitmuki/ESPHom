@@ -6,3 +6,4 @@ trash/
 /secrets.yaml
 bitpara.yaml
 build/
+.vscode/
